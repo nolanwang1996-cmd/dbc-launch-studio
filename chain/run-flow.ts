@@ -25,7 +25,7 @@ import {
 } from './env'
 import { buildStudioConfig, PRESETS } from '../lib/studio'
 
-const BUY_SOL = 0.05
+const BUY_SOL = Number(process.env.BUY_SOL || 0.05)
 const SELL_FRACTION = 0.5
 
 async function main() {
@@ -158,8 +158,11 @@ async function main() {
             new PublicKey(baseMintAddress),
             trader.publicKey
         )
-        const bal = await conn.getTokenAccountBalance(ata)
-        const raw = BigInt(bal.value.amount)
+        const ataInfo = await conn.getParsedAccountInfo(ata)
+        const parsed: any = ataInfo.value?.data
+        if (!parsed?.parsed) throw new Error('trader ATA not found')
+        const raw = BigInt(parsed.parsed.info.tokenAmount.amount)
+        const bal = { value: { uiAmountString: parsed.parsed.info.tokenAmount.uiAmountString } }
         const sellAmount = new BN((raw / 2n).toString())
         console.log(
             `    trader holds ${bal.value.uiAmountString} AGTC, selling ${(

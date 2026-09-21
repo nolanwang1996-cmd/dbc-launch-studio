@@ -4,8 +4,10 @@
 
 > Built for the **Colosseum Crypto World's Fair** hackathon — Meteora DBC track.
 > **Live demo: https://dbc-launch-studio.vercel.app** (curve designer + trade-flow simulator).
-> Live on Solana **devnet** with a fully verified on-chain flow (createConfig → createPool → buy → sell).
-> Evidence & reproduction: [`../VERIFY.md`](../VERIFY.md).
+> **Live on Solana MAINNET** — token `AGTC` (mint `2KYxjNxqUgpxTbpwFQMxXT6QbRJ8v8N63LC4Gb2SQnU7`),
+> launched through the studio's exact pipeline and **bought by two external wallets within
+> a minute of launch** (organic third-party volume). Full flow also verified on public **devnet**.
+> Evidence & reproduction: [`VERIFY.md`](./VERIFY.md).
 
 ---
 

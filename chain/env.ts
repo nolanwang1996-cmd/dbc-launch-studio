@@ -6,14 +6,24 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 export const PROJECT_ROOT = join(__dirname, '..')
 export const KEYS_DIR = join(PROJECT_ROOT, '.keys')
-export const STATE_FILE = join(PROJECT_ROOT, 'chain', '.state.json')
 
 export const RPC_URL =
     process.env.DBC_RPC_URL ||
     process.env.RPC_URL ||
     process.env.ANCHOR_PROVIDER_URL ||
     'https://api.devnet.solana.com'
+
+/** network label derived from the RPC URL: devnet | local | mainnet */
+export const NET: 'devnet' | 'local' | 'mainnet' = RPC_URL.includes('devnet')
+    ? 'devnet'
+    : RPC_URL.includes('127.0.0.1') || RPC_URL.includes('localhost')
+      ? 'local'
+      : 'mainnet'
+
+// per-network state file & keypair names so runs never clobber each other
+export const STATE_FILE = join(PROJECT_ROOT, 'chain', `.state.${NET}.json`)
 export const EXPLORER = 'https://explorer.solana.com'
+export const EXPLORER_CLUSTER = NET === 'mainnet' ? '' : `?cluster=${NET === 'local' ? 'custom&customUrl=http%3A%2F%2Flocalhost%3A8899' : 'devnet'}`
 
 // Fee routing vault: protocol fee claimer / agent treasury (payout address)
 export const FEE_CLAIMER_ADDRESS =
@@ -28,7 +38,7 @@ export function connection(): Connection {
 
 export function loadOrCreateKeypair(name: string): Keypair {
     mkdirSync(KEYS_DIR, { recursive: true })
-    const file = join(KEYS_DIR, `${name}.json`)
+    const file = join(KEYS_DIR, `${NET}-${name}.json`)
     if (existsSync(file)) {
         const raw = JSON.parse(readFileSync(file, 'utf8')) as number[]
         return Keypair.fromSecretKey(Uint8Array.from(raw))
@@ -51,11 +61,11 @@ export function writeState(patch: Record<string, any>) {
 }
 
 export function explorerTx(sig: string): string {
-    return `${EXPLORER}/tx/${sig}?cluster=devnet`
+    return `${EXPLORER}/tx/${sig}${EXPLORER_CLUSTER}`
 }
 
 export function explorerAddr(addr: string): string {
-    return `${EXPLORER}/address/${addr}?cluster=devnet`
+    return `${EXPLORER}/address/${addr}${EXPLORER_CLUSTER}`
 }
 
 export async function fundWithAirdrop(
@@ -64,6 +74,12 @@ export async function fundWithAirdrop(
     sol = 2,
     retries = 5
 ): Promise<void> {
+    if (NET === 'mainnet') {
+        const b = await conn.getBalance(kp.publicKey)
+        if (b < 0.003 * 1e9)
+            throw new Error(`mainnet wallet ${kp.publicKey.toBase58()} underfunded: ${b / 1e9} SOL`)
+        return
+    }
     const bal = await conn.getBalance(kp.publicKey)
     if (bal >= 0.5 * 1e9) return
     for (let i = 0; i < retries; i++) {

@@ -1,10 +1,43 @@
 # VERIFY — DBC Launch Studio 链上流程验证
 
-**更新**：2026-09-22 01:0x CST ｜ 本文件区分两类证据：**公共 devnet（主证据）** 与 **本地验证器（离线复现路径）**。
+**更新**：2026-09-22 01:5x CST ｜ 本文件区分三类证据：**主网（最强证据，含第三方真实买入）**、**公共 devnet**、**本地验证器（离线复现路径）**。
 
 ---
 
-## 一、公共 Solana devnet（主证据，explorer 可查）
+## 〇、Solana 主网（最强证据，explorer 可查）
+
+执行时间：2026-09-22 01:3x–01:5x CST ｜ RPC：`https://solana-rpc.publicnode.com`（direct）
+资金来源：Phantom 测试钱包（`4yAbyMVFnhe92EMp81UiU3ZxALCKXToeDNjEan6vBxRq`）内 5 USDC 无 gas 兑换为 0.042 SOL，分发：creator `5zCYCunaeCzMzQUquex9pZyNq3c2vtLsD2mChzP4d5HhPuEq7dQEHhcd8U6hzbdpCzGBguALLHXYNd9Tq1EH8WfV` / trader `5mFgatka1JQkjWs85VjahvVRJqLNgHR97KQSBQ3kGfAfsMPsGJ1uH3gAzxhMUp9RJsF8M1Z7tU3VqKcfREYGSr3x`。
+
+**代币：Agent Compute Credit (AGTC) — 主网**
+
+| 项 | 值 |
+|---|---|
+| mint | `2KYxjNxqUgpxTbpwFQMxXT6QbRJ8v8N63LC4Gb2SQnU7` |
+| pool | `51behYte9RzbqGKTz1CxMg6Q79GYhZC44YGeMcUDi7cH` |
+| config | `4SUrwSMfiFCbvNGYUZ2h218yf5iyRg6TSErjAt7WNYk5` |
+| feeClaimer（agent 金库） | `7YhFp4RjxgcLm4MoCoTJWSB3R8vqC1WRsdPkejAWT1PG` |
+
+| 步骤 | 交易签名 | slot |
+|---|---|---|
+| createConfig | `5avVJSsXFXpVzsEGRd7oWtXQretVPWkHyhKnWrXUTRt4p6DndF3sow6UvNnRrohuyP7ubte8C56r4NMTqfKhguV2` | 449128590 |
+| createPool | `3SnXuqbS1EKhiwUSTTpykCpEaAfbc9r7kWq27D9CZtnGHr4cbnp9W7Vkvb45giCUUibz8YkE36kntmqcMam6jBzV` | 449128608 |
+| buy 0.002 SOL | `3QUxHuwcU1xwkViNDDVMkqVFTjB9XF8CiH3kG4WRgNhg6W5ey4UYLykgJWmAMT11mz5zQAFcSshT5sxeAPd5ZHcL` | 449129259 |
+| sell 50% | `gFMkKxXMxGSiDPAtCCB5U8JxMdYF3jJTeJNpfHHBkeJKYBZhWsJ4iTcfiN4XK7S1zM4whr5AX6KT4q8vLNtfGww` | 449129466 |
+
+**🔥 第三方真实买入（非我方钱包，发射后 ~1 分钟内）**——判据"链上真实使用/成交量"的直接证据：
+
+| 买方（外部钱包） | 交易签名 | slot | 净投入 |
+|---|---|---|---|
+| `2X3EarLXkRwQ1FCGVcSoCRpNipFQ3fBiRNKM7K9PT6Rv` | `2NdzdJewFUzswvB6bukCSXLuhf2n6FNAneiG4gc9tJARn3sCUqsVfKWCQBse19ojcQzM8Gc1Jt742RiYtN2Yeh2G` | 449128623 | 0.1035 SOL |
+| `9xqDhDPqMJXQwKDuKfPo1UYiMRE2pFYnMS7LFU7KSQ1Z` | `61ibRb1oPT9anQoMCP9giSupVdo8YZkqwaS2Xko1r1cfrhs4eVsVqWBPKBFGB2soLtSEYdDbtHagMZDHFEvD2FSV` | 449128674 | 0.0617 SOL |
+
+池子读回（主网）：quoteReserve `0.155054` SOL / 阈值 `9.263132695` SOL / 迁移进度 `1.67%` / baseReserve 927,877,910 AGTC。
+Explorer：`https://explorer.solana.com/tx/<签名>`（主网无需 cluster 参数）。
+
+---
+
+## 一、公共 Solana devnet（explorer 可查）
 
 执行时间：2026-09-22 00:2x–00:4x CST ｜ RPC：`https://api.devnet.solana.com`
 （genesis `EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG`，SDK `@meteora-ag/dynamic-bonding-curve-sdk@1.5.12`）
