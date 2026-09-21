@@ -3,6 +3,7 @@
 **Design, simulate, and launch tokens on Meteora's Dynamic Bonding Curve — with an AI copilot and an agent-owned fee treasury.**
 
 > Built for the **Colosseum Crypto World's Fair** hackathon — Meteora DBC track.
+> **Live demo: https://dbc-launch-studio.vercel.app** (curve designer + trade-flow simulator).
 > Live on Solana **devnet** with a fully verified on-chain flow (createConfig → createPool → buy → sell).
 > Evidence & reproduction: [`../VERIFY.md`](../VERIFY.md).
 
