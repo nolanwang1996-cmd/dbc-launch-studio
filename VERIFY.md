@@ -89,6 +89,32 @@ DBC_RPC_URL=http://127.0.0.1:8901 npm run chain:flow
 
 ---
 
+## 三、RPC Fast 端点实测（mainnet 只读，2026-09-22）
+
+RPC Fast 免费档账号已注册（Solana dashboard，计划：15 req/s / 1.5M CU，**mainnet only**）。
+端点通过 `DBC_RPC_URL` 环境变量缝接入（`chain/env.ts`），实测脚本 `chain/rpc-check.ts`：
+
+```bash
+DBC_RPC_URL="https://solana-rpc.rpcfast.com/?api_key=<key>" npx tsx chain/rpc-check.ts
+```
+
+实测输出（2026-09-22 01:5x CST，中国大陆直连，无代理；key 已脱敏）：
+
+```
+RPC check — endpoint: https://solana-rpc.rpcfast.com/?api_key=wj3pRE…fa15
+  detected network label: mainnet
+  getVersion: 891ms (solana-core 4.3.0-rc.1)
+  getBalance(treasury 7YhFp4…T1PG): 959ms → 0 lamports @ slot 449127988
+  getLatestBlockhash: 279ms @ slot 449127988
+RPC check OK
+```
+
+说明：免费档为 mainnet-only，因此发射流程（devnet）不走 RPC Fast；接入价值在
+mainnet 阶段的池子状态轮询（getPool/getPoolConfig）与低延迟 swap 上送。
+API key 仅存本地 `.env`（`.gitignore` 覆盖），不在本仓库。
+
+---
+
 ## 真实性声明
 
 - 第一部分 8 笔签名为**公共 devnet 真实交易**，可用上文命令独立复核（`meta.err == null`）

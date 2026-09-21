@@ -107,7 +107,11 @@ The studio is built with switchable seams (`lib/integrations.ts`), so the same p
 serves multiple infrastructure providers:
 
 - **RPC layer** — endpoint is fully env-driven (`DBC_RPC_URL` / `RPC_URL` /
-  `ANCHOR_PROVIDER_URL`); **RPC Fast** drops in as a provider with zero code change.
+  `ANCHOR_PROVIDER_URL`). **RPC Fast is connected**: registered free-tier account
+  (15 req/s, mainnet), endpoint live-tested via `chain/rpc-check.ts`
+  (getVersion/getBalance/getLatestBlockhash, ~0.3–1s from a restricted network;
+  evidence in `VERIFY.md` §三). The launch flow stays on devnet; RPC Fast serves
+  the mainnet phase (pool-state polling, low-latency swap submission).
 - **Data layer** — pool analytics reads go through a `DataAdapter` interface
   (Meteora SDK today; **Solami** as the planned production data backend).
 - **Prediction markets** — every launch can be paired with a market on its outcome
