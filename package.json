@@ -6,27 +6,30 @@
   "scripts": {
     "chain:flow": "tsx chain/run-flow.ts",
     "chain:status": "tsx chain/status.ts",
-    "dev": "next dev",
-    "build": "next build"
+    "dev": "NODE_ENV=development next dev",
+    "build": "NODE_ENV=production next build",
+    "chain:verify": "tsx chain/verify.ts",
+    "chain:fund": "tsx chain/fund-trader.ts"
   },
   "dependencies": {
     "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.12",
     "@solana/spl-token": "^0.4.15",
     "@solana/web3.js": "^1.99.0",
     "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "autoprefixer": "^10.6.1",
     "bn.js": "^5.2.5",
     "next": "^15.5.25",
+    "postcss": "^8.5.28",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "tailwindcss": "^3.4.19",
     "tsx": "^4.23.15",
     "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@types/bn.js": "^5.2.0",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "autoprefixer": "^10.6.1",
-    "postcss": "^8.5.28",
-    "tailwindcss": "^3.4.19"
+    "playwright": "^1.63.0"
   }
 }

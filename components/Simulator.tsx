@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { CurveModel, SimSummary, SimTradeInput } from '@/lib/simulator'
 import { simulateTrades } from '@/lib/simulator'
-import type { StudioParams } from '@/lib/studio'
+import type { StudioParams } from '@/lib/presets'
 import { AGENT_TREASURY_ADDRESS } from '@/lib/constants'
 import { formatBps, formatCompact, formatPct, formatPrice, formatSol, shortAddr } from '@/lib/format'
 import { Button, Card, Stat } from './ui'

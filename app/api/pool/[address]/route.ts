@@ -40,12 +40,14 @@ export async function GET(
         const conn = connection()
         const client = DynamicBondingCurveClient.create(conn, 'confirmed')
 
-        const pool: any = await client.state.getPool(address)
-        if (!pool) {
+        const raw: any = await client.state.getPool(new PublicKey(address))
+        if (!raw) {
             return NextResponse.json({ error: 'Pool not found' }, { status: 404 })
         }
+        // SDK returns the account wrapper: { poolState: {...} }
+        const pool: any = raw.poolState ?? raw
         const config: any = await client.state.getPoolConfig(
-            pool.config?.toBase58?.() ?? String(pool.config)
+            new PublicKey(pool.config?.toBase58?.() ?? String(pool.config))
         )
         if (!config) {
             return NextResponse.json(

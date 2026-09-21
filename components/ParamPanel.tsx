@@ -1,6 +1,6 @@
 'use client'
 
-import { PRESETS, type StudioParams } from '@/lib/studio'
+import { PRESETS, type StudioParams } from '@/lib/presets'
 import { Card, Field, NumberInput } from './ui'
 
 export function ParamPanel({

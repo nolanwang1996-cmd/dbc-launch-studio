@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { StudioParams } from '@/lib/studio'
+import type { StudioParams } from '@/lib/presets'
 import { explorerAddr, explorerTx } from '@/lib/constants'
 import { shortAddr } from '@/lib/format'
 import { Button, Card, Field } from './ui'

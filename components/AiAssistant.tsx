@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { StudioParams } from '@/lib/studio'
+import type { StudioParams } from '@/lib/presets'
 import { analyzeIntent, type AssistantSuggestion } from '@/lib/assistant'
 import { Badge, Button, Card } from './ui'
 

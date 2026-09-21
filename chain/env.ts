@@ -95,9 +95,41 @@ export async function sendAndConfirm(
     tx: any,
     signers: Keypair[]
 ): Promise<string> {
-    const { sendAndConfirmTransaction } = await import('@solana/web3.js')
-    return sendAndConfirmTransaction(conn, tx, signers, {
-        commitment: 'confirmed',
+    // manual send + patient polling: proxy latency makes the default
+    // blockheight strategy give up too early
+    const sig = await conn.sendTransaction(tx, signers, {
         skipPreflight: false,
+        preflightCommitment: 'confirmed',
+        maxRetries: 5,
     })
+    const deadline = Date.now() + 180_000
+    let lastErr: any = null
+    while (Date.now() < deadline) {
+        try {
+            const st = await conn.getSignatureStatus(sig, {
+                searchTransactionHistory: true,
+            })
+            const v = st?.value
+            if (v) {
+                if (v.err) throw new Error(`tx failed on-chain: ${JSON.stringify(v.err)}`)
+                if (
+                    v.confirmationStatus === 'confirmed' ||
+                    v.confirmationStatus === 'finalized'
+                )
+                    return sig
+            }
+        } catch (e: any) {
+            if (String(e?.message).includes('tx failed on-chain')) throw e
+            lastErr = e
+        }
+        await new Promise((r) => setTimeout(r, 3000))
+    }
+    // final check before giving up
+    const st = await conn.getSignatureStatus(sig, {
+        searchTransactionHistory: true,
+    })
+    if (st?.value && !st.value.err) return sig
+    throw new Error(
+        `confirmation timeout for ${sig}: ${lastErr?.message || 'not found'}`
+    )
 }

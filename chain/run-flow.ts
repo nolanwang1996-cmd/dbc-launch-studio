@@ -185,8 +185,8 @@ async function main() {
     }
 
     // --- 5. read back pool state -------------------------------------------
-    const poolState = await client.state.getPool(poolAddress as any)
-    const poolConfig = await client.state.getPoolConfig(configPubkey as any)
+    const poolState = await client.state.getPool(new PublicKey(poolAddress))
+    const poolConfig = await client.state.getPoolConfig(new PublicKey(configPubkey))
     const quoteReserve = poolState!.poolState.quoteReserve.toNumber() / 1e9
     const threshold =
         (poolConfig as any).migrationQuoteThreshold.toNumber() / 1e9

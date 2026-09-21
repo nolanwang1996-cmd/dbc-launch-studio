@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
-import { PRESETS, type StudioParams } from '@/lib/studio'
+import { PRESETS, type StudioParams } from '@/lib/presets'
 import { buildCurveModel, type SimSummary } from '@/lib/simulator'
 import { formatPrice, formatSol } from '@/lib/format'
 import { ParamPanel } from '@/components/ParamPanel'
