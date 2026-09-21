@@ -27,9 +27,11 @@ export interface PoolInfo {
 export function PoolAnalytics({
     address,
     onAddressChange,
+    cluster = 'devnet',
 }: {
     address: string
     onAddressChange: (a: string) => void
+    cluster?: 'devnet' | 'mainnet'
 }) {
     const [input, setInput] = useState(address)
     const [info, setInfo] = useState<PoolInfo | null>(null)
@@ -41,7 +43,7 @@ export function PoolAnalytics({
         setBusy(true)
         setError(null)
         try {
-            const res = await fetch(`/api/pool/${addr.trim()}`)
+            const res = await fetch(`/api/pool/${addr.trim()}?cluster=${cluster}`)
             const data = await res.json()
             if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`)
             setInfo(data as PoolInfo)
@@ -65,7 +67,7 @@ export function PoolAnalytics({
     return (
         <Card
             title="Live Pool Analytics"
-            subtitle="On-chain state via getPool() + getPoolConfig() — devnet"
+            subtitle={`On-chain state via getPool() + getPoolConfig() — ${cluster}`}
         >
             <div className="space-y-4">
                 <div className="flex gap-2">

@@ -18,9 +18,9 @@ export default function Page() {
     const [presetId, setPresetId] = useState<string>('meme')
     const [params, setParams] = useState<StudioParams>({ ...PRESETS[0] })
     const [sim, setSim] = useState<SimSummary | null>(null)
-    // default: the studio's live devnet pool (see VERIFY.md); overridden after a fresh launch
+    // default: the studio's live MAINNET pool AGTC (see VERIFY.md); overridden after a fresh launch
     const [poolAddress, setPoolAddress] = useState(
-        'GzRDmC7P2evninsmpfZKcMHucpXqGE5CVqRaD3Kap3sS'
+        '51behYte9RzbqGKTz1CxMg6Q79GYhZC44YGeMcUDi7cH'
     )
 
     const applyPreset = useCallback((id: string) => {
@@ -109,7 +109,7 @@ export default function Page() {
             {/* launch + analytics */}
             <div className="grid gap-5 lg:grid-cols-2">
                 <LaunchPanel params={params} onLaunched={setPoolAddress} />
-                <PoolAnalytics address={poolAddress} onAddressChange={setPoolAddress} />
+                <PoolAnalytics address={poolAddress} onAddressChange={setPoolAddress} cluster={poolAddress === '51behYte9RzbqGKTz1CxMg6Q79GYhZC44YGeMcUDi7cH' ? 'mainnet' : 'devnet'} />
             </div>
 
             {/* assistant + treasury */}

@@ -22,11 +22,17 @@ function bnToNumber(v: any): number {
     }
 }
 
+const CLUSTER_RPC: Record<string, string> = {
+    devnet: process.env.DBC_RPC_URL || 'https://api.devnet.solana.com',
+    mainnet: process.env.MAINNET_RPC_URL || 'https://solana-rpc.publicnode.com',
+}
+
 export async function GET(
-    _req: NextRequest,
+    req: NextRequest,
     ctx: { params: Promise<{ address: string }> }
 ) {
     const { address } = await ctx.params
+    const cluster = req.nextUrl.searchParams.get('cluster') === 'mainnet' ? 'mainnet' : 'devnet'
     try {
         new PublicKey(address) // validates base58
     } catch {
@@ -37,7 +43,8 @@ export async function GET(
     }
 
     try {
-        const conn = connection()
+        const { Connection } = await import('@solana/web3.js')
+        const conn = new Connection(CLUSTER_RPC[cluster], 'confirmed')
         const client = DynamicBondingCurveClient.create(conn, 'confirmed')
 
         const raw: any = await client.state.getPool(new PublicKey(address))
