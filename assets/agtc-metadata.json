@@ -1,0 +1,12 @@
+{
+  "name": "Agent Compute Credit",
+  "symbol": "AGTC",
+  "description": "Agent-signed asset launched via DBC Launch Studio on Meteora's Dynamic Bonding Curve. Trading fees route to an autonomous agent treasury (feeClaimer 7YhFp4RjxgcLm4MoCoTJWSB3R8vqC1WRsdPkejAWT1PG). Built for Colosseum Crypto World's Fair.",
+  "image": "https://raw.githubusercontent.com/nolanwang1996-cmd/dbc-launch-studio/main/assets/agtc-logo.png",
+  "external_url": "https://github.com/nolanwang1996-cmd/dbc-launch-studio",
+  "attributes": [
+    { "trait_type": "issuer", "value": "DBC Launch Studio" },
+    { "trait_type": "curve", "value": "Meteora DBC" },
+    { "trait_type": "treasury", "value": "agent-owned" }
+  ]
+}
