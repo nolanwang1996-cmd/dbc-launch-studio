@@ -115,6 +115,36 @@ API key 仅存本地 `.env`（`.gitignore` 覆盖），不在本仓库。
 
 ---
 
+## 四、Panta API 集成实测（2026-09-22）
+
+自助注册 Panta API 账号（email + password，`/auth/register/` → `/account/keys/` 铸造 `pk_test_` key），
+真实客户端 `lib/panta.ts` + 检查脚本 `chain/panta-check.ts`：
+
+```bash
+PANTA_API_KEY=pk_test_… npx tsx chain/panta-check.ts
+```
+
+实测输出（2026-09-22 02:0x CST）：
+
+```
+Panta integration check
+  whoami: DBC Launch Studio <nolanwang2026@gmail.com> status=active canCreateMarkets=true
+  markets: 1 listed (first: "Sandbox test market")
+  quote: createId=cr_sandbox_test fee=50 USDC (liquidity 10 + platform 40)
+  note: Test mode: this response uses sandbox fixtures and does not access Solana mainnet.
+Panta integration check OK
+```
+
+集成的市场条件直接引用我们已验证的 DBC 池状态：「池 GzRDmC7P… 是否在创建后 7 天内达到
+migrationQuoteThreshold」——结算依据是**客观链上状态（quoteReserve ≥ migrationQuoteThreshold），
+非人工裁决**；创建费报价 50 USDC（10 流动性注入 + 40 平台收入）。
+
+如实标注：`pk_test_` key 返回 sandbox fixtures（不触 mainnet）；`pk_live_` 升级路径相同
+（`/account/keys/` 铸 `env=live`），需要真实 USDC 创建费时再做（**需要用户决策**：50 USDC/市场）。
+API key 仅存本地 `.env`（`.gitignore` 覆盖），不在本仓库。
+
+---
+
 ## 真实性声明
 
 - 第一部分 8 笔签名为**公共 devnet 真实交易**，可用上文命令独立复核（`meta.err == null`）

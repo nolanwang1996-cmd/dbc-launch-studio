@@ -8,8 +8,9 @@
  *    StateService; a Solami-backed adapter can implement the same surface.
  *  - PredictionMarketAdapter: every launch can be paired with a prediction
  *    market on its outcome (e.g. "migrates within 7 days") via Panta API
- *    (docs.panta.market). Not wired to a live API key yet — see
- *    submission/panta.md for the integration design.
+ *    (docs.panta.market). A real client exists in lib/panta.ts and is
+ *    live-tested (chain/panta-check.ts; VERIFY.md §四) with a pk_test_ key —
+ *    settlement condition references the pool's own on-chain migration state.
  */
 
 export interface RpcProviderSpec {

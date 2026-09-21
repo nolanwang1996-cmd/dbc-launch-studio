@@ -115,8 +115,10 @@ serves multiple infrastructure providers:
 - **Data layer** — pool analytics reads go through a `DataAdapter` interface
   (Meteora SDK today; **Solami** as the planned production data backend).
 - **Prediction markets** — every launch can be paired with a market on its outcome
-  ("migrates within N days?") via the `PredictionMarketAdapter` interface designed
-  against **Panta API** (docs.panta.market); see `submission/panta.md`.
+  ("migrates within N days?") via **Panta API** (docs.panta.market). Real client in
+  `lib/panta.ts`, live-tested with a `pk_test_` key (`chain/panta-check.ts`: whoami /
+  catalog / creation-fee quote — evidence in `VERIFY.md` §四). The market's settlement
+  condition is the pool's own on-chain migration state — objective, not oracle-judged.
 - **AI tooling** — the in-app parameter assistant (rule-based core, LLM-pluggable);
   the project itself was built LLM-assisted (Claude/DeepSeek agents writing, running
   and verifying the on-chain flow).
