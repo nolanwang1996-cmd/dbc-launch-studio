@@ -2,7 +2,9 @@
 
 **Design, simulate, and launch tokens on Meteora's Dynamic Bonding Curve — with an AI copilot and an agent-owned fee treasury.**
 
-> Built for the **Colosseum Crypto World's Fair** hackathon (Meteora DBC side track, and cross-submitted to the RPC Fast / Panta / Solana-data tracks).
+> Built for the **Colosseum Crypto World's Fair** hackathon — Meteora DBC track.
+> Live on Solana **devnet** with a fully verified on-chain flow (createConfig → createPool → buy → sell).
+> Evidence & reproduction: [`../VERIFY.md`](../VERIFY.md).
 
 ---
 
@@ -12,59 +14,64 @@ Launching a token on a bonding curve today is a black box. Founders pick paramet
 
 ## What it does
 
-**DBC Launch Studio** is a workbench for Meteora dynamic bonding curve (DBC) launches:
+**DBC Launch Studio** is a workbench for Meteora Dynamic Bonding Curve (DBC) launches:
 
-1. **Curve designer** — pick a preset (meme / utility / agent) or dial in initial market cap, migration market cap, total supply, fee decay schedule, and migration fee; the studio maps those to a real on-chain DBC `ConfigParameters` via the official SDK's `buildCurveWithMarketCap`.
-2. **Simulator** — deterministically simulates the price path and the migration timeline for a given buy/sell flow, so a founder can see the curve they are about to commit to *before* launching. Pure functions, no network.
-3. **One-flow launch** — `chain:flow` executes the whole path against any Solana RPC: `createConfig → createPool → buy → sell`, persisting addresses and signatures to `chain/.state.json`.
-4. **Pool analytics** — reads live pool state (`quoteReserve`, `migrationQuoteThreshold`, migration progress) and renders it.
-5. **AI copilot** — an assistant that turns a plain-language token thesis into a starting parameter set.
-6. **Agent treasury** — the config's `feeClaimer` is an **agent-owned vault** (`7YhFp4RjxgcLm4MoCoTJWSB3R8vqC1WRsdPkejAWT1PG`), so curve fees accrue to an autonomous treasury rather than a human wallet. This is the piece that makes "an agent that runs on its own token" possible: the agent issues the token, the curve pays the agent.
+1. **Curve designer** — pick a preset (meme / utility / agent) or dial in initial market cap, migration market cap, total supply, fee decay schedule, and creator fee share; the studio maps those to a real on-chain DBC `ConfigParameters` via the official SDK's `buildCurveWithMarketCap()`. The same pure function feeds the UI *and* the on-chain scripts — what you simulate is what you deploy.
+2. **Trade-flow simulator** — deterministically advances the curve in sqrt-price (Q64.64) space for a given buy/sell sequence: price path, per-trade fee (priced by the anti-sniper exponential schedule), migration progress, and the creator/treasury fee split.
+3. **One-click launch** — the UI calls `POST /api/launch`, which performs a real `createConfig` + `createPool` on devnet with server-side role keypairs. Keys never leave the server; only signatures and addresses come back.
+4. **Live pool analytics** — reads `getPool()` / `getPoolConfig()`: reserves, current price, migration progress bar, and accrued fees (partner/creator/protocol) — straight from chain.
+5. **AI parameter assistant** — turns a plain-language token thesis ("fair meme launch, strong anti-sniper, graduate ~80 SOL") into a concrete parameter set with rationale. Rule-based core, LLM-pluggable.
+6. **Agent treasury fee routing** — every config created by the studio sets `feeClaimer` to an **agent-owned vault** (`7YhFp4RjxgcLm4MoCoTJWSB3R8vqC1WRsdPkejAWT1PG`). The agent issues the token; the curve pays the agent.
 
 ## Why it matters (a new class of asset)
 
 A bonding curve is a **price discovery machine for something that did not have a market**. If the thing being priced is an *agent's output* — and the fees flow back to that agent's treasury — the curve becomes a funding mechanism for autonomous software. That is a different asset class from a memecoin: the issuer is the product, and the curve is its revenue.
 
-The roadmap item that completes this thesis is the **prediction layer**: pairing every launch with a market on its outcome ("does this token migrate within N days?"). We've scoped the integration against **Panta API** (prediction-market infrastructure) — see `submission/panta.md`. Turn every launch into a two-sided market from block one.
+## Verified on devnet — full launch path
+
+Executed end-to-end on **public Solana devnet** and independently re-verified with `getTransaction` (all `err: null`):
+
+| Step | Transaction (devnet) |
+|---|---|
+| `createConfig` | `4VvCjtDnpHKuQes2AzGsy2ZvLWGFxhrdyGQAgTTFiytgMMh2eV7wwrebMCGBBoNqUWHn9FBLtb5R3B5RFUiR5Mth` |
+| `createPool` (AGTC) | `57YZMvaQB9UYL9ch2uhZhJqzyNK9sQ4gUkzqvUgvDzpfHVW7Fynbphfrjx8dDdMpQkCydgFQVXtHLQUBidccVXgD` |
+| `buy` 0.05 SOL → 24.17M AGTC | `24s1UHrftW8wfr1yE5GkCy7tRvkP7m8PZ2nUgdGKYzoT6aSffxgcduREbbZ3QmDCLjDbcSZ6VFigbndhevqNR6Lw` |
+| `sell` 50% of position | `5wp61jYAMM94ckj9HjavnyqYj8e7UgQGR8kZT7t2ajsTBW77fVf99Eop4jiDEXioPtLEKxQUs1hJc81MGe9Vqg3H` |
+| UI launch: createConfig (AGTC2) | `39vM54fDV5gzodTMigPypgA3X8fb3GsHVCgH7gn225LRUhTdxTfWewCVenrLwRJDBuB6ibimqdZLUe3x4U1iszFv` |
+| UI launch: createPool (AGTC2) | `MfurZzrsq2sp5deoJyt8LC4UiafzaiZdkcT16zXMucHRd5j1HBt1CoVeKubyfNq6Q7Z1USFu5m6wudFE8xFgw94` |
+
+Live addresses: config `CdUmkBrA8s9JUMqg3vm6wYfhTXMSB3pP7dTnLXhnvK7p` · pool `GzRDmC7P2evninsmpfZKcMHucpXqGE5CVqRaD3Kap3sS` · mint `DUPGwtkUyrQW6Piv5UdSTERW6KPWCnQTZT9f9aMN9jNX` · on-chain `feeClaimer` = agent treasury `7YhFp4RjxgcLm4MoCoTJWSB3R8vqC1WRsdPkejAWT1PG` (verified via `getPoolConfig`).
+
+Re-verify anytime:
+
+```bash
+npm run chain:verify    # re-fetches every signature from devnet, prints slot + err
+npm run chain:status    # live pool reserves / migration progress / fee accrual
+```
 
 ## Architecture
 
 ```
 app/                    Next.js (App Router) UI
-  page.tsx              studio shell: params → simulator → launch → analytics
-  api/launch/route.ts   server-side launch endpoint (SDK, server keypair)
+  page.tsx              studio shell: designer → simulator → launch → analytics
+  api/launch/route.ts   server-side launch endpoint (SDK, server keypairs)
   api/pool/[address]/   live pool state reader
-components/             ParamPanel, Simulator, PriceCurveChart, LaunchPanel,
-                        PoolAnalytics, TreasuryPanel, AiAssistant, ui
+components/             ParamPanel, PriceCurveChart (hand-rolled SVG), Simulator,
+                        LaunchPanel, PoolAnalytics, AiAssistant, TreasuryPanel, ui
 lib/
-  studio.ts             StudioParams → DBC ConfigParameters (pure)
-  simulator.ts          curve/price-path + migration-timeline math (pure)
+  studio.ts             StudioParams → DBC ConfigParameters (pure, SDK builder)
+  simulator.ts          curve/price-path + fee-schedule math (pure)
   assistant.ts          natural-language thesis → parameter suggestions
-  constants.ts, format.ts
+  constants.ts          treasury address etc.
 chain/
-  env.ts                RPC/keypair/state plumbing, funding, send+confirm
+  env.ts                RPC/keypair helpers (keys in .keys/, gitignored)
   run-flow.ts           createConfig → createPool → buy → sell (idempotent)
-  probe-config.ts       parameter probe harness used to find valid configs
+  verify.ts             independent on-chain signature verification
+  status.ts             live pool analytics readback
+demo-record.mts         Playwright driver used to record demo/demo.mp4
 ```
 
-**Meteora integration depth** (the judged dimension): config creation with custom fee-scheduler decay, migration fee option and migration target, pool creation with a fresh base mint, and swaps in both directions (`swapBaseForQuote` true/false), plus `state.getPool` / `getPoolConfig` reads for analytics. All of it goes through the official `@meteora-ag/dynamic-bonding-curve-sdk` — no hand-rolled instruction encoding.
-
-## Verified: the full launch path works
-
-`chain:flow` was executed end-to-end and every transaction was independently re-checked with `solana confirm -v`. Four steps, four confirmed transactions, plus a live pool-state read-back:
-
-| Step | Transaction |
-|---|---|
-| `createConfig` | `31HPw3CV1RxytWie8yRjozZgCZrZ2FWYQx7BoCKDsjSQXznQmBd3ifcq26g6WrwydRUs1Sh3wP7wGZNbapQDrC7U` |
-| `createPool` | `5cDZAp9nZh2xgCUBy4C9CHzSw9VKqt4xpXX1qZ7M7jtQxgpnwKV1Ku22fjui2ogsQjuMDQC7qNfz1WwJKDHmZFZJ` |
-| `buy` 0.05 SOL | `2kSrZcCYPZXA4u1NpzfYDFwQFsrvoUi26XfriByytnouFFu2DaEyC4pJfUgFBBKanQyA6GDPpvUVmZApPrQGwgCE` |
-| `sell` 50% | `37rQyZVZgxCLrZAVb9oYr3WR7GRj3dAu49RERuvs8iErN4QQ3Vn8UrfRw9SARFwdbpb2MDPSJhBNkLY9qfQHcyfx` |
-
-- config account `2gByRvqusv1iBM397KFTARpoykUU8884PkhTvuW7Wid4`
-- pool `7budf1PJZwvX9qpGioHTxZBAXammxXBU966HgFFrbKD2`, base mint `9tEfUMPPEjqZ8SQzMFftiPXHScABDocncFkxowHaNLuh`
-- read-back: `quoteReserve = 0.024457 SOL`, `migrationQuoteThreshold = 9.2631 SOL`, migration progress `0.26%`
-
-> **Honest scoping:** these ran on a **local validator running the real DBC program binary** (cloned with `--clone-upgradeable-program`), not on public devnet — public devnet SOL was unobtainable at build time (the devnet faucet was globally dry across every egress we tried). The program executed is byte-identical to mainnet's. See [`VERIFY.md`](./VERIFY.md) for the reproducible commands and the full disclosure.
+**Meteora integration depth**: config creation with exponential fee-scheduler decay, dynamic fees, customizable migration fee and DAMM v2 migration target; pool creation with a fresh base mint; swaps in both directions (`swapBaseForQuote` true/false); `state.getPool` / `getPoolConfig` reads for analytics. All of it goes through the official `@meteora-ag/dynamic-bonding-curve-sdk@1.5.12` — no hand-rolled instruction encoding.
 
 ## Run it
 
@@ -72,41 +79,30 @@ chain/
 # 0) deps
 npm install
 
-# 1) local validator with the real Meteora DBC program (+ Metaplex)
-export PATH="$HOME/.local/share/solana/install/active_release/bin:$PATH"
-solana-test-validator --url https://solana-rpc.publicnode.com \
-  --clone-upgradeable-program dbcij3LWUppWqq96dh6gJWwBifmcGfLSB5D4DuSMaqN \
-  --clone-upgradeable-program metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s \
-  --rpc-port 8901 --reset
+# 1) UI
+npm run dev          # http://localhost:3000 (set PORT to override)
 
-# 2) fund the three role wallets (creator / partner / trader)
-for k in creator partner trader; do
-  solana airdrop 100 "$(solana-keygen pubkey .keys/$k.json)" --url http://127.0.0.1:8901
-done
-
-# 3) run the full on-chain flow
-DBC_RPC_URL=http://127.0.0.1:8901 npm run chain:flow
-
-# 4) UI
-npm run dev     # http://localhost:3000
+# 2) on-chain (devnet)
+npm run chain:flow   # idempotent: skips steps already recorded in chain/.state.json
+npm run chain:verify
+npm run chain:status
 ```
 
-Point `DBC_RPC_URL` at any RPC (`https://api.devnet.solana.com`, or a dedicated provider) to run the identical flow elsewhere. **Only the RPC endpoint changes** — that is deliberate: the data/RPC layer is the seam where RPC Fast, Solami, or Helius drop in (see `submission/rpc-fast.md`, `submission/solana-data.md`).
-
 ### Configuration
+
 | Env | Meaning | Default |
 |---|---|---|
 | `DBC_RPC_URL` | Solana RPC endpoint | `https://api.devnet.solana.com` |
-| `.keys/{creator,partner,trader}.json` | role keypairs (**git-ignored**) | generated on first run |
+| `PORT` | Next.js dev port | `3000` |
+| `.keys/{creator,partner,trader}.json` | role keypairs (**git-ignored**, generated on first run) | — |
 
-No private keys, mnemonics, or API keys are committed. `.keys/`, `.next/`, `node_modules/` and `chain/.state.json` are git-ignored.
+Network note: behind restrictive networks, Node 22 needs `NODE_USE_ENV_PROXY=1` with `HTTPS_PROXY` set for RPC access.
+
+**No private keys, mnemonics, or API keys are committed.** `.keys/`, `.next/`, `node_modules/`, `chain/.state.json` are git-ignored.
 
 ## Tech
 
-**Core:** TypeScript · Next.js (App Router) · React · Tailwind · `@meteora-ag/dynamic-bonding-curve-sdk` · `@solana/web3.js` · `@solana/spl-token` · `bn.js`
-**Chain tooling:** Solana CLI (Agave) · `solana-test-validator` with `--clone-upgradeable-program` · `tsx`
-**AI tooling:** LLM-assisted development and an in-app copilot that maps a token thesis to curve parameters
-**Data/infra seams (roadmap, adapter-shaped):** RPC Fast · Solami · Panta API
+TypeScript · Next.js 15 (App Router) · React 19 · Tailwind · `@meteora-ag/dynamic-bonding-curve-sdk` · `@solana/web3.js` · `@solana/spl-token` · `bn.js` · Playwright (demo recording)
 
 ## Business plan
 
@@ -119,12 +115,12 @@ No private keys, mnemonics, or API keys are committed. `.keys/`, `.next/`, `node
 ## Roadmap
 
 - [x] Curve designer → real `ConfigParameters`
-- [x] Deterministic simulator (price path + migration timeline)
-- [x] Verified end-to-end launch flow (`createConfig → createPool → buy → sell`)
+- [x] Deterministic simulator (price path + fee schedule + migration progress)
+- [x] Verified end-to-end devnet launch flow (`createConfig → createPool → buy → sell`)
+- [x] One-click launch from the UI (real devnet transactions)
 - [x] Pool analytics + agent treasury panel + AI copilot
-- [ ] Public devnet/mainnet launch with an explorer link
-- [ ] Panta-powered prediction market per launch
-- [ ] RPC Fast / Solami adapters behind a single data-layer interface
+- [ ] Mainnet launch (needs SOL gas on the treasury wallet)
+- [ ] Fee claiming automation for the agent treasury
 - [ ] Multi-curve portfolio view + backtesting on historical launches
 
 ## Team
@@ -133,4 +129,4 @@ No private keys, mnemonics, or API keys are committed. `.keys/`, `.next/`, `node
 
 ## License
 
-MIT — see [`LICENSE`](./LICENSE).
+MIT.
