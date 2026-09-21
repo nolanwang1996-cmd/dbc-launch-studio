@@ -1,0 +1,13 @@
+{
+  "configAddress": "2gByRvqusv1iBM397KFTARpoykUU8884PkhTvuW7Wid4",
+  "createConfigTx": "31HPw3CV1RxytWie8yRjozZgCZrZ2FWYQx7BoCKDsjSQXznQmBd3ifcq26g6WrwydRUs1Sh3wP7wGZNbapQDrC7U",
+  "preset": "agent",
+  "poolAddress": "7budf1PJZwvX9qpGioHTxZBAXammxXBU966HgFFrbKD2",
+  "baseMint": "9tEfUMPPEjqZ8SQzMFftiPXHScABDocncFkxowHaNLuh",
+  "createPoolTx": "5cDZAp9nZh2xgCUBy4C9CHzSw9VKqt4xpXX1qZ7M7jtQxgpnwKV1Ku22fjui2ogsQjuMDQC7qNfz1WwJKDHmZFZJ",
+  "buyTx": "2kSrZcCYPZXA4u1NpzfYDFwQFsrvoUi26XfriByytnouFFu2DaEyC4pJfUgFBBKanQyA6GDPpvUVmZApPrQGwgCE",
+  "buySol": 0.05,
+  "sellTx": "37rQyZVZgxCLrZAVb9oYr3WR7GRj3dAu49RERuvs8iErN4QQ3Vn8UrfRw9SARFwdbpb2MDPSJhBNkLY9qfQHcyfx",
+  "quoteReserve": 0.024457324,
+  "migrationThreshold": 9.263132695
+}
