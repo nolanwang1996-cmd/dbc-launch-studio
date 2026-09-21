@@ -11,6 +11,7 @@ import { LaunchPanel } from '@/components/LaunchPanel'
 import { PoolAnalytics } from '@/components/PoolAnalytics'
 import { AiAssistant } from '@/components/AiAssistant'
 import { TreasuryPanel } from '@/components/TreasuryPanel'
+import { PantaPanel } from '@/components/PantaPanel'
 import { Badge, Card } from '@/components/ui'
 
 export default function Page() {
@@ -116,6 +117,9 @@ export default function Page() {
                 <AiAssistant onApply={applyAssistant} />
                 <TreasuryPanel creatorPct={params.creatorTradingFeePercentage} />
             </div>
+
+            {/* prediction market on the launch outcome */}
+            <PantaPanel poolAddress={poolAddress} />
 
             <footer className="border-t border-ink-800 pt-4 text-center text-[10px] text-slate-600">
                 DBC Launch Studio · hackathon build · devnet only, not financial advice ·
