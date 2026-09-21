@@ -100,6 +100,22 @@ Network note: behind restrictive networks, Node 22 needs `NODE_USE_ENV_PROXY=1` 
 
 **No private keys, mnemonics, or API keys are committed.** `.keys/`, `.next/`, `node_modules/`, `chain/.state.json` are git-ignored.
 
+## Integration layer (pluggable by design)
+
+The studio is built with switchable seams (`lib/integrations.ts`), so the same product
+serves multiple infrastructure providers:
+
+- **RPC layer** — endpoint is fully env-driven (`DBC_RPC_URL` / `RPC_URL` /
+  `ANCHOR_PROVIDER_URL`); **RPC Fast** drops in as a provider with zero code change.
+- **Data layer** — pool analytics reads go through a `DataAdapter` interface
+  (Meteora SDK today; **Solami** as the planned production data backend).
+- **Prediction markets** — every launch can be paired with a market on its outcome
+  ("migrates within N days?") via the `PredictionMarketAdapter` interface designed
+  against **Panta API** (docs.panta.market); see `submission/panta.md`.
+- **AI tooling** — the in-app parameter assistant (rule-based core, LLM-pluggable);
+  the project itself was built LLM-assisted (Claude/DeepSeek agents writing, running
+  and verifying the on-chain flow).
+
 ## Tech
 
 TypeScript · Next.js 15 (App Router) · React 19 · Tailwind · `@meteora-ag/dynamic-bonding-curve-sdk` · `@solana/web3.js` · `@solana/spl-token` · `bn.js` · Playwright (demo recording)

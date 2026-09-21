@@ -9,7 +9,10 @@ export const KEYS_DIR = join(PROJECT_ROOT, '.keys')
 export const STATE_FILE = join(PROJECT_ROOT, 'chain', '.state.json')
 
 export const RPC_URL =
-    process.env.DBC_RPC_URL || 'https://api.devnet.solana.com'
+    process.env.DBC_RPC_URL ||
+    process.env.RPC_URL ||
+    process.env.ANCHOR_PROVIDER_URL ||
+    'https://api.devnet.solana.com'
 export const EXPLORER = 'https://explorer.solana.com'
 
 // Fee routing vault: protocol fee claimer / agent treasury (payout address)

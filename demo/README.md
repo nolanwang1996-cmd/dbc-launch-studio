@@ -2,19 +2,25 @@
 
 | File | Length | Purpose |
 |---|---|---|
-| `demo-1min.mp4` | 1:04 | Colosseum weekly update / short cut |
-| `demo-3min.mp4` | 2:16 | Full walkthrough for the track submissions |
+| `demo-1min.mp4` | 1:02 | Colosseum weekly update / short cut |
+| `demo-3min.mp4` | 2:00 | Full walkthrough for the track submissions |
+| `demo-pitch.mp4` | 0:44 | Pitch-only cut (narrative, no UI walkthrough) |
 | `app-main.png` | — | Studio UI: curve designer, bonding curve, trade-flow simulator, fee routing |
 | `app-full.png` | — | Full-page capture (AI assistant, agent treasury, deployment panels) |
 
-**What the video shows (all real artifacts, no mock-ups):**
-1. Title + problem framing
-2. The five-part product (design → simulate → launch → treasury → copilot)
-3. Terminal: the verified `chain:flow` run — `createConfig → createPool → buy → sell`, with the transaction lines as emitted
-4. The running Next.js studio (headless Chrome capture of `localhost:3000`)
-5. Closing: verified-on-chain summary and the agent-treasury thesis
+**What the main videos show (real artifacts, no mock-ups):**
 
-The terminal footage is the captured stdout of the real flow (`flow-output.txt`), and the UI frames are
-real screenshots of the app served by `npm run dev`. Screen-recording APIs are unavailable in the build
-environment (macOS screen-capture permission is denied to the build process), so the video is composed
-from genuine captures rather than a live desktop recording — the underlying artifacts are unmodified.
+1. Title + product framing
+2. Curve designer + preset switching (meme / utility / agent)
+3. Trade-flow simulator: buys and a sell advance the curve, with per-trade fees and
+   the creator/treasury split
+4. AI parameter assistant: natural-language thesis → parameters → apply
+5. **A real one-click launch on public Solana devnet** (createConfig + createPool,
+   signatures shown on screen — independently verifiable, see `../VERIFY.md`)
+6. Live pool analytics read from chain: reserves, price, migration progress, fee split
+7. Closing: agent-treasury thesis
+
+The main video was recorded by driving the actual Next.js app with Playwright
+(`../demo-record.mts`) and narrated with an English voiceover. Every on-chain action
+shown landed on **public devnet** (signatures in `../VERIFY.md`; the UI launch shown
+in the video is the AGTC3 pool `72hqXyaeMAmKb98XS5qo2EyZHGgBqVDxKsDBX6bKnxDY`).

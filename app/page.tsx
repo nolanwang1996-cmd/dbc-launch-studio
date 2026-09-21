@@ -17,7 +17,10 @@ export default function Page() {
     const [presetId, setPresetId] = useState<string>('meme')
     const [params, setParams] = useState<StudioParams>({ ...PRESETS[0] })
     const [sim, setSim] = useState<SimSummary | null>(null)
-    const [poolAddress, setPoolAddress] = useState('')
+    // default: the studio's live devnet pool (see VERIFY.md); overridden after a fresh launch
+    const [poolAddress, setPoolAddress] = useState(
+        'GzRDmC7P2evninsmpfZKcMHucpXqGE5CVqRaD3Kap3sS'
+    )
 
     const applyPreset = useCallback((id: string) => {
         const p = PRESETS.find((x) => x.id === id)
