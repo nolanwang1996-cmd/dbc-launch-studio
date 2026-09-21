@@ -39,7 +39,7 @@
 - **creator 费用领取（费用路由闭环实证）**：`4N8pN7xf2H7UfTUxhNDtGqecJVDKoDGUqsvD4Ewaf2YaqpvtbaX8mJ3JUEhH7fXbp8bMkBshYy7CieXAEiQqGaz8`（slot 449148229，领取 0.000888 SOL 至 creator 钱包；金库侧费用留存池内，待 Seeker 钱包签名领取）
 Explorer：`https://explorer.solana.com/tx/<签名>`（主网无需 cluster 参数）。
 
-**第三方索引收录**：AGTC 已被 DexScreener 自动收录（dexId=meteoradbc）：https://dexscreener.com/solana/51behyte9rzbqgktz1cxmg6q79gyhzc44ygemcudi7ch —— 24h 内 3 买 3 卖、$36.4 成交量、FDV ~$241（抓取时间 2026-09-22 04:4x CST）。
+**第三方索引收录**：AGTC 已被 DexScreener 自动收录；并已被 **Jupiter**（api.jup.ag token search，launchpad=met-dbc）索引，可直接在 Jupiter 终端交易。（dexId=meteoradbc）：https://dexscreener.com/solana/51behyte9rzbqgktz1cxmg6q79gyhzc44ygemcudi7ch —— 24h 内 3 买 3 卖、$36.4 成交量、FDV ~$241（抓取时间 2026-09-22 04:4x CST）。
 
 ---
 
