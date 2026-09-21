@@ -33,6 +33,10 @@
 | `9xqDhDPqMJXQwKDuKfPo1UYiMRE2pFYnMS7LFU7KSQ1Z` | `61ibRb1oPT9anQoMCP9giSupVdo8YZkqwaS2Xko1r1cfrhs4eVsVqWBPKBFGB2soLtSEYdDbtHagMZDHFEvD2FSV` | 449128674 | 0.0617 SOL |
 
 池子读回（主网）：quoteReserve `0.155054` SOL / 阈值 `9.263132695` SOL / 迁移进度 `1.67%` / baseReserve 927,877,910 AGTC。
+
+**后续链上活动（持续更新）**：
+- 第三方买家获利卖出（完整价格发现闭环）：`2X3Ear…PT6Rv` 卖出 +0.0966 SOL（slot 449130169）；`9xqDhD…SQ1Z` 卖出 +0.0523 SOL（slot 449131115）
+- **creator 费用领取（费用路由闭环实证）**：`4N8pN7xf2H7UfTUxhNDtGqecJVDKoDGUqsvD4Ewaf2YaqpvtbaX8mJ3JUEhH7fXbp8bMkBshYy7CieXAEiQqGaz8`（slot 449148229，领取 0.000888 SOL 至 creator 钱包；金库侧费用留存池内，待 Seeker 钱包签名领取）
 Explorer：`https://explorer.solana.com/tx/<签名>`（主网无需 cluster 参数）。
 
 ---

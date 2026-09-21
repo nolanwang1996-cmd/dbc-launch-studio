@@ -12,6 +12,7 @@
     "chain:fund": "tsx chain/fund-trader.ts"
   },
   "dependencies": {
+    "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
     "@meteora-ag/dynamic-bonding-curve-sdk": "^1.5.12",
     "@solana/spl-token": "^0.4.15",
     "@solana/web3.js": "^1.99.0",
